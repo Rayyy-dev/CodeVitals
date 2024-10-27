@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Octokit } from '@octokit/rest';
-// import { Repository } from '@/types';
+import { Repository } from '@/types';
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
