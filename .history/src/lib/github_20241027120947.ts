@@ -152,7 +152,7 @@ export async function calculateQualityScore(repo: any, token: string): Promise<{
   };
 
   const score = Math.round(Object.values(metrics).reduce((sum, value) => sum + value, 0) / Object.keys(metrics).length);
-  const suggestions = await generateSuggestions(repo, metrics);
+  const suggestions = await generateSuggestions(repo, metrics, token);
 
   return { score, metrics, suggestions };
 }
@@ -263,7 +263,7 @@ function calculateBranchingStrategy(repo: any): number {
   return repo.default_branch === 'main' || repo.default_branch === 'master' ? 80 : 50;
 }
 
-async function generateSuggestions(repo: any, metrics: any): Promise<string[]> {
+async function generateSuggestions(repo: any, metrics: any, token: string): Promise<string[]> {
   const suggestions = [];
 
   if (repo.size === 0 || !metrics) {
