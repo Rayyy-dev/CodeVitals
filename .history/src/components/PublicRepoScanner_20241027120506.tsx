@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {  FiGithub, FiCode, FiUsers, FiAlertCircle, FiStar, FiExternalLink } from 'react-icons/fi';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Repository } from '@/types';

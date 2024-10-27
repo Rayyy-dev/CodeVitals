@@ -84,6 +84,7 @@ export async function fetchUserRepositories(token: string): Promise<Repository[]
 }
 
 export async function fetchRepos(token: string, visibility: 'public' | 'private'): Promise<any[]> {
+async function fetchRepos(token: string, visibility: 'public' | 'private'): Promise<any[]> {
   const repos = [];
   let page = 1;
   let hasNextPage = true;
