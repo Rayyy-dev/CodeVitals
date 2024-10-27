@@ -23,18 +23,11 @@ interface RepoContent {
 
 interface GithubRepo {
   full_name: string;
-  name: string;
-  size: number;
   updated_at: string;
-  pushed_at: string;
   has_wiki?: boolean;
   open_issues_count: number;
+  pushed_at: string;
   description?: string;
-  language?: string;
-  stargazers_count: number;
-  forks_count: number;
-  default_branch: string;
-  html_url: string;
 }
 
 interface ComplexFile {
@@ -46,12 +39,6 @@ interface DuplicateArea {
   file: string;
   startLine: number;
   endLine: number;
-}
-
-interface GithubContentItem {
-  name: string;
-  path: string;
-  type: 'file' | 'dir' | 'symlink' | 'submodule';
 }
 
 export async function fetchUserRepositories(token: string): Promise<Repository[]> {
@@ -204,17 +191,17 @@ export async function fetchRepositories(token: string): Promise<Repository[]> {
   }
 }
 
-function calculateCodeComplexity(repo: GithubRepo): number {
+function calculateCodeComplexity(repo: any): number {
   if (!repo.size) return 0;
   return Math.round(Math.max(0, 100 - repo.size / 100));
 }
 
-function calculateCodeDuplication(repo: GithubRepo): number {
+function calculateCodeDuplication(repo: any): number {
   // Placeholder: In a real scenario, you'd use a code analysis tool
   return repo.size ? 80 : 100;
 }
 
-function calculateCodeStyleConsistency(repo: GithubRepo): number {
+function calculateCodeStyleConsistency(repo: any): number {
   return repo.language ? 80 : 0;
 }
 
@@ -396,9 +383,9 @@ async function getUndocumentedFiles(repo: any, token: string, contents: any[]): 
   return undocumentedFiles.slice(0, 5); // Return top 5 undocumented files
 }
 
-async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise<{ contents: GithubContentItem[], error: string | null }> {
+async function fetchRepositoryContents(repo: any, token: string): Promise<{ contents: any[], error: string | null }> {
   try {
-    const response = await axios.get<GithubContentItem[]>(`https://api.github.com/repos/${repo.full_name}/contents`, {
+    const response = await axios.get(`https://api.github.com/repos/${repo.full_name}/contents`, {
       headers: { Authorization: `token ${token}` },
     });
     
@@ -413,9 +400,9 @@ async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise
     }
 
     return { contents: response.data, error: null };
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching repository contents:`, error);
-    return { contents: [], error: error instanceof Error ? error.message : 'Unknown error occurred' };
+    return { contents: [], error: error.message || 'Unknown error occurred' };
   }
 }
 

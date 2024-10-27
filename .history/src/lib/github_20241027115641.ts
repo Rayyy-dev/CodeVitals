@@ -23,18 +23,11 @@ interface RepoContent {
 
 interface GithubRepo {
   full_name: string;
-  name: string;
-  size: number;
   updated_at: string;
-  pushed_at: string;
   has_wiki?: boolean;
   open_issues_count: number;
+  pushed_at: string;
   description?: string;
-  language?: string;
-  stargazers_count: number;
-  forks_count: number;
-  default_branch: string;
-  html_url: string;
 }
 
 interface ComplexFile {
@@ -46,12 +39,6 @@ interface DuplicateArea {
   file: string;
   startLine: number;
   endLine: number;
-}
-
-interface GithubContentItem {
-  name: string;
-  path: string;
-  type: 'file' | 'dir' | 'symlink' | 'submodule';
 }
 
 export async function fetchUserRepositories(token: string): Promise<Repository[]> {
@@ -204,17 +191,17 @@ export async function fetchRepositories(token: string): Promise<Repository[]> {
   }
 }
 
-function calculateCodeComplexity(repo: GithubRepo): number {
+function calculateCodeComplexity(repo: any): number {
   if (!repo.size) return 0;
   return Math.round(Math.max(0, 100 - repo.size / 100));
 }
 
-function calculateCodeDuplication(repo: GithubRepo): number {
+function calculateCodeDuplication(repo: any): number {
   // Placeholder: In a real scenario, you'd use a code analysis tool
   return repo.size ? 80 : 100;
 }
 
-function calculateCodeStyleConsistency(repo: GithubRepo): number {
+function calculateCodeStyleConsistency(repo: any): number {
   return repo.language ? 80 : 0;
 }
 
@@ -294,7 +281,7 @@ async function generateSuggestions(repo: any, metrics: any, token: string): Prom
   return suggestions;
 }
 
-async function getTopIssue(repo: GithubRepo, token: string): Promise<string> {
+async function getTopIssue(repo: any, token: string): Promise<string> {
   try {
     const response = await axios.get(`https://api.github.com/repos/${repo.full_name}/issues?state=open&sort=created&direction=desc`, {
       headers: { Authorization: `token ${token}` },
@@ -306,7 +293,7 @@ async function getTopIssue(repo: GithubRepo, token: string): Promise<string> {
   }
 }
 
-async function getOldestPR(repo: GithubRepo, token: string): Promise<string> {
+async function getOldestPR(repo: any, token: string): Promise<string> {
   try {
     const response = await axios.get(`https://api.github.com/repos/${repo.full_name}/pulls?state=open&sort=created&direction=asc`, {
       headers: { Authorization: `token ${token}` },
@@ -318,25 +305,25 @@ async function getOldestPR(repo: GithubRepo, token: string): Promise<string> {
   }
 }
 
-async function getMostComplexFunction(repo: GithubRepo, token: string, contents: RepoContent[]): Promise<string> {
+async function getMostComplexFunction(repo: any, token: string, contents: any[]): Promise<string> {
   const complexFiles = await getComplexFiles(repo, token, contents);
   return complexFiles.length > 0 ? `${complexFiles[0].name}: ${complexFiles[0].complexFunction}` : "Complexity analysis not available";
 }
 
-async function getMostDuplicatedArea(repo: GithubRepo, token: string, contents: RepoContent[]): Promise<string> {
+async function getMostDuplicatedArea(repo: any, token: string, contents: any[]): Promise<string> {
   const duplicateAreas = await getDuplicateAreas(repo, token, contents);
   return duplicateAreas.length > 0 ? `${duplicateAreas[0].file}: Lines ${duplicateAreas[0].startLine}-${duplicateAreas[0].endLine}` : "Duplication analysis not available";
 }
 
-async function getComplexFiles(repo: GithubRepo, token: string, contents: RepoContent[]): Promise<ComplexFile[]> {
+async function getComplexFiles(repo: any, token: string, contents: any[]): Promise<Array<{name: string, complexFunction: string}>> {
   const complexFiles = [];
 
   for (const file of contents) {
-    if (file.name.endsWith('.ts') || file.name.endsWith('.tsx') || file.name.endsWith('.js') || file.name.endsWith('.jsx')) {
-      const fileContent = await fetchFileContent(repo, file.name, token);
+    if (file.type === 'blob' && (file.path.endsWith('.ts') || file.path.endsWith('.tsx') || file.path.endsWith('.js') || file.path.endsWith('.jsx'))) {
+      const fileContent = await fetchFileContent(repo, file.path, token);
       const complexity = analyzeComplexity(fileContent);
       if (complexity > 10) { // Arbitrary threshold
-        complexFiles.push({ name: file.name, complexFunction: findMostComplexFunction(fileContent) });
+        complexFiles.push({ name: file.path, complexFunction: findMostComplexFunction(fileContent) });
       }
     }
   }
@@ -344,20 +331,20 @@ async function getComplexFiles(repo: GithubRepo, token: string, contents: RepoCo
   return complexFiles.slice(0, 3); // Return top 3 complex files
 }
 
-async function getDuplicateAreas(repo: GithubRepo, token: string, contents: RepoContent[]): Promise<DuplicateArea[]> {
+async function getDuplicateAreas(repo: any, token: string, contents: any[]): Promise<Array<{file: string, startLine: number, endLine: number, similarFile: string}>> {
   const duplicateAreas = [];
 
   for (let i = 0; i < contents.length; i++) {
     for (let j = i + 1; j < contents.length; j++) {
-      if (contents[i].name.endsWith('.ts') || contents[i].name.endsWith('.tsx') || contents[i].name.endsWith('.js') || contents[i].name.endsWith('.jsx')) {
-        const file1Content = await fetchFileContent(repo, contents[i].name, token);
-        const file2Content = await fetchFileContent(repo, contents[j].name, token);
+      if (contents[i].type === 'blob' && contents[j].type === 'blob') {
+        const file1Content = await fetchFileContent(repo, contents[i].path, token);
+        const file2Content = await fetchFileContent(repo, contents[j].path, token);
         const duplicates = findDuplicates(file1Content, file2Content);
         duplicateAreas.push(...duplicates.map(d => ({
-          file: contents[i].name,
+          file: contents[i].path,
           startLine: d.startLine1,
           endLine: d.endLine1,
-          similarFile: contents[j].name
+          similarFile: contents[j].path
         })));
       }
     }
@@ -396,9 +383,9 @@ async function getUndocumentedFiles(repo: any, token: string, contents: any[]): 
   return undocumentedFiles.slice(0, 5); // Return top 5 undocumented files
 }
 
-async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise<{ contents: GithubContentItem[], error: string | null }> {
+async function fetchRepositoryContents(repo: any, token: string): Promise<{ contents: any[], error: string | null }> {
   try {
-    const response = await axios.get<GithubContentItem[]>(`https://api.github.com/repos/${repo.full_name}/contents`, {
+    const response = await axios.get(`https://api.github.com/repos/${repo.full_name}/contents`, {
       headers: { Authorization: `token ${token}` },
     });
     
@@ -413,9 +400,9 @@ async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise
     }
 
     return { contents: response.data, error: null };
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching repository contents:`, error);
-    return { contents: [], error: error instanceof Error ? error.message : 'Unknown error occurred' };
+    return { contents: [], error: error.message || 'Unknown error occurred' };
   }
 }
 
@@ -473,7 +460,7 @@ function isWellDocumented(content: string): boolean {
   return commentLines.length / lines.length > 0.1; // Arbitrary threshold of 10% comments
 }
 
-async function generatePersonalizedSuggestions(repo: GithubRepo, token: string): Promise<string[]> {
+async function generatePersonalizedSuggestions(repo: any, token: string): Promise<string[]> {
   if (repo.size === 0) {
     return ["🚀 Your repository is empty. Start by adding a README.md file to describe your project and its purpose."];
   }

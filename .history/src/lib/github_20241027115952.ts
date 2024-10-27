@@ -48,12 +48,6 @@ interface DuplicateArea {
   endLine: number;
 }
 
-interface GithubContentItem {
-  name: string;
-  path: string;
-  type: 'file' | 'dir' | 'symlink' | 'submodule';
-}
-
 export async function fetchUserRepositories(token: string): Promise<Repository[]> {
   try {
     const response = await axios.get<Repository[]>('https://api.github.com/user/repos', {
@@ -396,9 +390,9 @@ async function getUndocumentedFiles(repo: any, token: string, contents: any[]): 
   return undocumentedFiles.slice(0, 5); // Return top 5 undocumented files
 }
 
-async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise<{ contents: GithubContentItem[], error: string | null }> {
+async function fetchRepositoryContents(repo: any, token: string): Promise<{ contents: any[], error: string | null }> {
   try {
-    const response = await axios.get<GithubContentItem[]>(`https://api.github.com/repos/${repo.full_name}/contents`, {
+    const response = await axios.get(`https://api.github.com/repos/${repo.full_name}/contents`, {
       headers: { Authorization: `token ${token}` },
     });
     
@@ -413,9 +407,9 @@ async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise
     }
 
     return { contents: response.data, error: null };
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error fetching repository contents:`, error);
-    return { contents: [], error: error instanceof Error ? error.message : 'Unknown error occurred' };
+    return { contents: [], error: error.message || 'Unknown error occurred' };
   }
 }
 
