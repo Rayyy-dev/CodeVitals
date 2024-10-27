@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Code Vitals
 
-## Getting Started
+<p align="center">
+ <p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=22&duration=4000&pause=1000&color=39C3D4&center=true&vCenter=true&width=700&lines=Welcome+to+Code+Vitals!+⚡;Optimize+Your+Code+Health+and+Performance!;Built+with+Next.js%2C+TypeScript%2C+and+Vercel!">
+</p>
 
-First, run the development server:
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<p align="center">
+  <a href="https://code-vitals.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-Vercel-brightgreen.svg" alt="Live Demo"></a>
+</p>
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔥 Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Performance Insights**: Get instant feedback and data on code performance.
+- **Vital Metrics**: Track health indicators like load times, resource usage, and responsiveness.
+- **Clean, Developer-Friendly UI**: Built with simplicity and usability in mind.
+- **Cross-Platform Support**: Seamless experience on desktop and mobile.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Live Demo
 
-To learn more about Next.js, take a look at the following resources:
+Explore the live app here:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[🌐 **Code Vitals**](https://code-vitals.vercel.app/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend**:
+  - Next.js (React framework for fast, optimized performance)
+  - TypeScript (for type-safe coding)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Deployment**:
+  - Vercel (automated, zero-config deployment for modern web apps)
+
+---
+
+## 🎯 Roadmap & Future Plans
+
+- **Customizable Dashboards**: Enable users to personalize their metrics view.
+- **Team Collaboration**: Share metrics and insights with team members.
+- **Advanced Analytics**: Include more granular code health analytics.
+
+---
+## 📝 License
+
+Code Vitals is open-sourced under the [Apache License 2.0](LICENSE). Use it, break it, improve it – it’s all fair game.
+
+---
+
+## 📚 Getting Started
+
+1. **Clone the repo**:
+
+   ```bash
+   git clone https://github.com/yourusername/code-vitals.git
+   cd code-vitals
+
+
+### Installation
+
+1. **Clone the repo**:
+
+   ```bash
+   git clone https://github.com/yourusername/code-vitals.git
+   cd code-vitals
+
