@@ -20,8 +20,9 @@ export default function PublicRepoScanner() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isValidUrl) return;
+
     setIsLoading(true);
-    setError('');
+    setError(null);
 
     try {
       const response = await fetch('/api/scan-public-repo', {

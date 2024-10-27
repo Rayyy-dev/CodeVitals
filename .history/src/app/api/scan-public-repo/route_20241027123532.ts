@@ -12,14 +12,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    console.log('Scanning repository:', url);
     const [owner, repo] = url.split('/').slice(-2);
     
     if (!owner || !repo) {
       return NextResponse.json({ error: 'Invalid repository URL' }, { status: 400 });
     }
-
-    console.log('Fetching data for:', owner, repo);
 
     const [repoData, issuesData, languagesData, commitsData, branchesData] = await Promise.all([
       octokit.repos.get({ owner, repo }),
@@ -28,8 +25,6 @@ export async function POST(req: NextRequest) {
       octokit.repos.listCommits({ owner, repo, per_page: 100 }),
       octokit.repos.listBranches({ owner, repo }),
     ]);
-
-    console.log('Data fetched successfully');
 
     const languages = Object.keys(languagesData.data);
     const mainLanguage = languages.length > 0 ? languages[0] : 'N/A';
@@ -79,6 +74,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(scanResult);
   } catch (error) {
     console.error('Error scanning repository:', error);
-    return NextResponse.json({ error: 'Error scanning repository: ' + (error as Error).message }, { status: 500 });
+    return NextResponse.json({ error: 'Error scanning repository' }, { status: 500 });
   }
 }
