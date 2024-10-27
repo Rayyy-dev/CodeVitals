@@ -174,7 +174,7 @@ export async function fetchRepositories(token: string): Promise<Repository[]> {
         console.log(`Processing repository: ${repo.name}`);
         const { score, metrics, suggestions } = await calculateQualityScore(repo);
         const personalizedSuggestions = await generatePersonalizedSuggestions(repo, token);
-        const { contents } = await fetchRepositoryContents(repo, token);
+        const { contents, error } = await fetchRepositoryContents(repo, token);
 
         return {
           id: repo.id,
@@ -413,9 +413,10 @@ async function fetchRepositoryContents(repo: GithubRepo, token: string): Promise
     }
 
     return { contents: response.data };
+    return { contents: response.data, error: null };
   } catch (error) {
     console.error(`Error fetching repository contents:`, error);
-    return { contents: [] };
+    return { contents: [], error: error instanceof Error ? error.message : 'Unknown error occurred' };
   }
 }
 

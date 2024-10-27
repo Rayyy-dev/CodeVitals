@@ -174,7 +174,7 @@ export async function fetchRepositories(token: string): Promise<Repository[]> {
         console.log(`Processing repository: ${repo.name}`);
         const { score, metrics, suggestions } = await calculateQualityScore(repo);
         const personalizedSuggestions = await generatePersonalizedSuggestions(repo, token);
-        const { contents } = await fetchRepositoryContents(repo, token);
+        const { contents, error } = await fetchRepositoryContents(repo, token);
 
         return {
           id: repo.id,
